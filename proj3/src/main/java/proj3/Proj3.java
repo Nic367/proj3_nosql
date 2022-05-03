@@ -11,6 +11,7 @@ import org.bson.Document;
 import com.mongodb.Block;
 import com.mongodb.DBObject;
 import com.mongodb.DBCursor;
+import com.mongodb.client.DistinctIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -33,8 +34,65 @@ import org.bson.conversions.Bson;
 public class Proj3 {
 
     public static void main(String[] args) {
-        //System.out.println("Hello World!");
+        //Connection to MongoDB Atlas
+        MongoClient client = MongoClients.create("mongodb+srv://user3:pass3@cluster0.3bpui.mongodb.net/gaming?retryWrites=true&w=majority");
+        MongoDatabase database = client.getDatabase("gaming");
+        System.out.println();System.out.println();
+
+        /******************************NICOLE******************************/
+        MongoCollection<Document> collection = database.getCollection("globalvgsales");
+        //gaming> db.globalvgsales.distinct("Genre")
+        DistinctIterable<String> unique_genres = collection.distinct("Genre", String.class);
+        /*[
+            'Action',   'Adventure',
+            'Fighting', 'Misc',
+            'Platform', 'Puzzle',
+            'Racing',   'Role-Playing',
+            'Shooter',  'Simulation',
+            'Sports',   'Strategy'
+        ]*/
+        if (unique_genres == null) {
+            System.out.println("Failed");
+        }else{
+            for(var ug : unique_genres) {
+                FindIterable<Document> result = collection.find(eq("Genre", ug));
+            }
+        }
         
+        /*
+        {
+            "_id" : ObjectId("59b6b96423b65d0a04de128d"),
+            "itemCount": 25,
+            "defectiveItemCount": 5,
+            "time": ISODate("x")
+        },
+        {
+            "_id" : ObjectId("59b6b96423b65d0a04de128d"),
+            "itemCount": 20,
+            "defectiveItemCount": 7,
+            "time": ISODate("x")
+        }
+        Aggregation pipeline = newAggregation(
+                match(Criteria.where("time").gt(time)),
+                group().sum("itemCount").as("total").sum("defectiveItemCount").as("defective"),
+                project("total", "defective")
+        );*/
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        /*
         //Connection to MongoDB Atlas
         MongoClient client = MongoClients.create("mongodb+srv://user3:pass3@cluster0.3bpui.mongodb.net/gaming?retryWrites=true&w=majority");
         MongoDatabase database = client.getDatabase("gaming");
@@ -65,6 +123,6 @@ public class Proj3 {
         for (Document r : result) {
             System.out.println(r.toJson());
         }
-        
+        */
     }
 }
