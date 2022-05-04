@@ -203,8 +203,51 @@ public class Proj3 {
         }
         //4) who should I market it towards (platform / device)
         
+        
+        
+        
+        
+        /******************************CHRIS******************************/
         //5) What are the top 5 selling videogames in each country
-        //db.globalvgratings.aggregate([{$sort:{ Name: 1, JP_Sales: 1 } },{$group:{_id: "$Name",JP_Sales: { $first: "$JP_Sales" }}},{$sort:{JP_Sales:-1}},{$limit: 5}])
+        MongoCollection<Document> coll = database.getCollection("globalvgsales");
+        
+                                    //collection.aggregate(Arrays.asList(Aggregates.sort(ascending("_id"))));
+        
+        AggregateIterable<Document> jp = coll.aggregate(Arrays.asList(
+                Aggregates.sort(new Document("Name", 1).append("JP_Sales", 1)),
+                Aggregates.group(new Document("_id", "Name").append("JP_Sales", Accumulators.first("$JP_Sales", "JP_Sales"))),
+                Aggregates.sort(new Document("Name", 1).append("JP_Sales", 1)),
+                Aggregates.limit(5)
+        ));
+        
+        for(var j:jp){
+            System.out.println(j.toJson());
+        }
+        
+        /*db.globalvgratings.aggregate([
+        {
+            $sort:
+            { 
+                Name: 1, JP_Sales: 1 
+            }
+        },
+        {
+            $group:
+            {
+                _id: "$Name",JP_Sales: 
+                { 
+                    $first: "$JP_Sales" 
+                }
+            }
+        },
+        {
+            $sort:{
+                JP_Sales:-1
+            }
+        },
+        {
+            $limit: 5
+        }])*/
         //db.globalvgratings.aggregate([{$sort:{ Name: 1, NA_Sales: 1 } },{$group:{_id: "$Name",NA_Sales: { $first: "$NA_Sales" }}},{$sort:{NA_Sales:-1}},{$limit: 5}])
         //db.globalvgratings.aggregate([{$sort:{ Name: 1, EU_Sales: 1 } },{$group:{_id: "$Name",EU_Sales: { $first: "$EU_Sales" }}},{$sort:{EU_Sales:-1}},{$limit: 5}])
         
