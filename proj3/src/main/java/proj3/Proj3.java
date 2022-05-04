@@ -203,7 +203,49 @@ public class Proj3 {
                 System.out.println();
             }
         }
+        
         //4) who should I market it towards (platform / device)
+        System.out.println();System.out.println();
+        ArrayList<String> arr2 = new ArrayList();
+        ArrayList<String> arr3 = new ArrayList();
+        AggregateIterable<Document> jPlat = collection.aggregate(Arrays.asList(
+                Aggregates.sort(eq("Global_Sales", -1))
+        ));
+        for(Document j:jPlat){
+            //System.out.println(j);
+            try {
+                //System.out.println(j.getString("Platform")+"\t");
+                if (!arr2.contains(j.getString("Platform"))) {
+                    arr2.add(j.getString("Platform"));
+                }
+            } catch (Exception e) {
+                //System.out.println(j.getInteger("Platform")+"\t");
+                if (!arr2.contains(j.getInteger("Platform").toString())) {
+                    arr2.add(j.getInteger("Platform").toString());
+                }
+            }
+            try {
+                arr3.add(j.getInteger("Global_Sales").toString());
+            } catch (Exception e) {
+                arr3.add(j.getDouble("Global_Sales").toString());
+            }
+            
+        }
+        System.out.println("  TOP PLATFORMS IN GLOBAL SALES");
+        System.out.println("___________________________________");
+        int count = 1;
+        for(String a:arr2){
+            System.out.println("Rank "+count+" "+a+"\t"+arr3.get(count-1)+" million sales");
+            count++;
+        }
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -240,34 +282,6 @@ public class Proj3 {
         for(Document n:na){
             System.out.println(n.getString("Name")+"\t\t"+n.getString("Platform"));
         }
-        
-        /*db.globalvgratings.aggregate([
-        {
-            $sort:
-            { 
-                Name: 1, JP_Sales: 1 
-            }
-        },
-        {
-            $group:
-            {
-                _id: "$Name",JP_Sales: 
-                { 
-                    $first: "$JP_Sales" 
-                }
-            }
-        },
-        {
-            $sort:{
-                JP_Sales:-1
-            }
-        },
-        {
-            $limit: 5
-        }])*/
-        //db.globalvgratings.aggregate([{$sort:{ Name: 1, NA_Sales: 1 } },{$group:{_id: "$Name",NA_Sales: { $first: "$NA_Sales" }}},{$sort:{NA_Sales:-1}},{$limit: 5}])
-        //db.globalvgratings.aggregate([{$sort:{ Name: 1, EU_Sales: 1 } },{$group:{_id: "$Name",EU_Sales: { $first: "$EU_Sales" }}},{$sort:{EU_Sales:-1}},{$limit: 5}])
-        
         
     }
 
