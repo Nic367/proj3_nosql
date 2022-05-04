@@ -204,7 +204,13 @@ public class Proj3 {
             }
         }
         
-        //4) who should I market it towards (platform / device)
+        /*QUESTION OF ANALYSIS: who should I market it towards (platform / device)?
+        I went about this by first ranking all the data on Global_Sales then going through each snd
+        adding distinct platforms to a separate array as well as their respective number of sales.
+        The reason I could not use Distinct in this case is because even though the value is a string
+        in the dataset, JAVA is reading it in as an integer if the only characters in the string are
+        numbers (i.e. Platform 2600).
+        */
         System.out.println();System.out.println();
         ArrayList<String> arr2 = new ArrayList();
         ArrayList<String> arr3 = new ArrayList();
