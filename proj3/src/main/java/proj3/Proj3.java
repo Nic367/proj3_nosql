@@ -205,45 +205,37 @@ public class Proj3 {
         }
         
         /*QUESTION OF ANALYSIS: who should I market it towards (platform / device)?
-        I went about this by first ranking all the data on Global_Sales then going through each snd
-        adding distinct platforms to a separate array as well as their respective number of sales.
-        The reason I could not use Distinct in this case is because even though the value is a string
-        in the dataset, JAVA is reading it in as an integer if the only characters in the string are
-        numbers (i.e. Platform 2600).
+        I went about this by first ranking all the data on Global_Sales then grouping 
+        them based on their distinct platforms and finding their corresponding max.
+        JAVA is reading it in as an integer if the only characters in the string are
+        numbers (i.e. Platform 2600)., which is why I needed to implement a try catch.
         */
-        System.out.println();System.out.println();
-        ArrayList<String> arr2 = new ArrayList();
-        ArrayList<String> arr3 = new ArrayList();
-        AggregateIterable<Document> jPlat = collection.aggregate(Arrays.asList(
+        System.out.println();
+        System.out.println();
+        AggregateIterable<Document> jPlat2 = collection.aggregate(Arrays.asList(
+                Aggregates.sort(eq("Global_Sales", -1)),
+                Aggregates.group("$Platform", Accumulators.max("Sales", "$Global_Sales")),
                 Aggregates.sort(eq("Global_Sales", -1))
         ));
-        for(Document j:jPlat){
-            //System.out.println(j);
-            try {
-                //System.out.println(j.getString("Platform")+"\t");
-                if (!arr2.contains(j.getString("Platform"))) {
-                    arr2.add(j.getString("Platform"));
-                }
-            } catch (Exception e) {
-                //System.out.println(j.getInteger("Platform")+"\t");
-                if (!arr2.contains(j.getInteger("Platform").toString())) {
-                    arr2.add(j.getInteger("Platform").toString());
-                }
-            }
-            try {
-                arr3.add(j.getInteger("Global_Sales").toString());
-            } catch (Exception e) {
-                arr3.add(j.getDouble("Global_Sales").toString());
-            }
-            
-        }
+        
         System.out.println("  TOP PLATFORMS IN GLOBAL SALES");
         System.out.println("___________________________________");
-        int count = 1;
-        for(String a:arr2){
-            System.out.println("Rank "+count+" "+a+"\t"+arr3.get(count-1)+" million sales");
-            count++;
+        for (Document j : jPlat2) {
+            try{
+                System.out.print(j.getString("_id")+"\n\t|");
+                for (int x = 0; x < j.getDouble("Sales"); x++) {
+                    System.out.print("*");
+                }
+                System.out.print("\t" + j.getDouble("Sales")+"\n");
+            }catch (Exception e) {
+                System.out.print(j.getInteger("_id")+"\n\t|");
+                for (int x = 0; x < j.getDouble("Sales"); x++) {
+                    System.out.print("*");
+                }
+                System.out.print("\t" + j.getDouble("Sales")+"\n");
+            }
         }
+        
         
         
         
