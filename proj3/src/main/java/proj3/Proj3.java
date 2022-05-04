@@ -214,13 +214,31 @@ public class Proj3 {
         System.out.println();System.out.println();
         MongoCollection<Document> coll = database.getCollection("globalvgsales");
         
-        AggregateIterable<Document> jp2 = coll.aggregate(Arrays.asList(
+        AggregateIterable<Document> jp = coll.aggregate(Arrays.asList(
                 Aggregates.sort(eq("JP_Sales", -1)),
                 Aggregates.limit(5)
         ));
+        for(Document j:jp){
+            System.out.println(j.getString("Name")+"\t\t"+j.getString("Platform"));
+        }
         
-        for(Document j:jp2){
-            System.out.println(j.toJson());
+        System.out.println();
+        AggregateIterable<Document> eu = coll.aggregate(Arrays.asList(
+                Aggregates.sort(eq("EU_Sales", -1)),
+                Aggregates.limit(5)
+        ));
+        for(Document e:eu){
+            System.out.println(e.getString("Name")+"\t\t"+e.getString("Platform"));
+        }
+        
+        System.out.println();
+        AggregateIterable<Document> na = coll.aggregate(Arrays.asList(
+                Aggregates.sort(eq("NA_Sales", -1)),
+                Aggregates.limit(5)
+        ));
+        
+        for(Document n:na){
+            System.out.println(n.getString("Name")+"\t\t"+n.getString("Platform"));
         }
         
         /*db.globalvgratings.aggregate([
