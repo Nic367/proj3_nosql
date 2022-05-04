@@ -209,6 +209,7 @@ public class Proj3 {
         
         /******************************CHRIS******************************/
         //5) What are the top 5 selling videogames in each country
+        System.out.println();System.out.println();
         MongoCollection<Document> coll = database.getCollection("globalvgsales");
         
                                     //collection.aggregate(Arrays.asList(Aggregates.sort(ascending("_id"))));
@@ -220,9 +221,10 @@ public class Proj3 {
                 Aggregates.limit(5)
         ));
         
-        for(var j:jp){
-            System.out.println(j.toJson());
-        }
+        System.out.println(jp);
+        
+       
+        
         
         /*db.globalvgratings.aggregate([
         {
