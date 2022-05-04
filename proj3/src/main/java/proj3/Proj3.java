@@ -43,9 +43,14 @@ public class Proj3 {
         System.out.println();System.out.println();
 
         /******************************NICOLE******************************/
+        /*QUESTION OF ANALYSIS: What genres are most popular to each given region?
+        The way I went going about this was first getting a distinct list of genres then going through each 
+        and summing up every regions total for that specific genre. After adding each document to my master
+        array "all_arr" I went through and creating my graph for visual comparison before adding the max
+        sales region per document to my "arr" array and listing out where each genre would most likely have
+        the most sales based on 40 years of data*/
         MongoCollection<Document> collection = database.getCollection("globalvgsales");
-        
-        //2) What genres are most popular to each given region        
+              
         //gaming> db.globalvgsales.distinct("Genre")
         DistinctIterable<String> unique_genres = collection.distinct("Genre", String.class);
         /*[
@@ -59,79 +64,146 @@ public class Proj3 {
         if (unique_genres == null) {
             System.out.println("No Genres");
         }else{
+            ArrayList<Document> arr = new ArrayList();
+            ArrayList<Document> all_arr = new ArrayList();
             for(var ug : unique_genres) {
-                
-                AggregateIterable<Document> genreCounts2 = collection.aggregate(Arrays.asList(
+                AggregateIterable<Document> na_counts = collection.aggregate(Arrays.asList(
                         Aggregates.match(Filters.eq("Genre", ug)),
-                        Aggregates.group(ug, Accumulators.sum("sum", "$NA_Sales"))));
-                for (Document g : genreCounts2) {
-                        System.out.println(g.toJson());
-                    }
-                
-                /*
-                ...
-                Sports 2346
-                Strategy 681
-                
-                ...
-                Sports 683.349
-                Strategy 68.7
-                */
+                        Aggregates.group(ug, Accumulators.sum("NA", "$NA_Sales"))
+                ));
+                AggregateIterable<Document> eu_counts = collection.aggregate(Arrays.asList(
+                        Aggregates.match(Filters.eq("Genre", ug)),
+                        Aggregates.group(ug, Accumulators.sum("EU", "$EU_Sales"))
+                ));
+                AggregateIterable<Document> jp_counts = collection.aggregate(Arrays.asList(
+                        Aggregates.match(Filters.eq("Genre", ug)),
+                        Aggregates.group(ug, Accumulators.sum("JP", "$JP_Sales"))
+                ));
+                AggregateIterable<Document> other_counts = collection.aggregate(Arrays.asList(
+                        Aggregates.match(Filters.eq("Genre", ug)),
+                        Aggregates.group(ug, Accumulators.sum("Other", "$Other_Sales"))
+                ));
+                for (Document n : na_counts) {
+                    all_arr.add(n);
+                    //System.out.println(n.toJson());
+                }
+                for (Document e : eu_counts) {
+                    all_arr.add(e);
+                    //System.out.println(e.toJson());
+                }
+                for (Document j : jp_counts) {
+                    all_arr.add(j);
+                    //System.out.println(j.toJson());
+                }
+                for (Document o : other_counts) {
+                    all_arr.add(o);
+                    //System.out.println(o.toJson());
+                }
+            }
+            /*
+            ...
+            Sports 2346
+            Strategy 681
 
+            ...
+            Sports 683.349
+            Strategy 68.7
+            */
+            
+            System.out.println("\t\t\tGRAPH OF GENRE SALES IN THE 10 MILLIONS");
+            System.out.println("______________________________________________________________________________________________________");
+            
+            for (int y = 0; y < all_arr.size(); y++) {
+
+                System.out.print(all_arr.get(y).getString("_id")+"\n\t|");
+                int tens = (int) (all_arr.get(y).getDouble("NA") / 10);
+                for (int x = 0; x < tens; x++) {
+                    System.out.print("*");
+                }
+                System.out.print("\t"+tens+"\tNorth America\n");
+
+                System.out.print("\t|");
+                tens = (int) (all_arr.get(y + 1).getDouble("EU") / 10);
+                for (int x = 0; x < tens; x++) {
+                    System.out.print("*");
+                }
+                System.out.print("\t"+tens+"\tEurope\n");
+
+                System.out.print("\t|");
+                tens = (int) (all_arr.get(y + 2).getDouble("JP") / 10);
+                for (int x = 0; x < tens; x++) {
+                    System.out.print("*");
+                }
+                System.out.print("\t"+tens+"\tJapan\n");
+
+                System.out.print("\t|");
+                tens = (int) (all_arr.get(y + 3).getDouble("Other") / 10);
+                for (int x = 0; x < tens; x++) {
+                    System.out.print("*");
+                }
+                System.out.print("\t"+tens+"\tOther Regions\n");
+                y += 3;
+            }
+            
+            int index = 0;
+            while (index < all_arr.size()) {
+                Document a;
+
+                if (all_arr.get(index).getDouble("NA") > all_arr.get(index + 1).getDouble("EU")) {
+                    if (all_arr.get(index).getDouble("NA") > all_arr.get(index + 2).getDouble("JP")) {
+                        if (all_arr.get(index).getDouble("NA") > all_arr.get(index + 3).getDouble("Other")) {
+                            a = all_arr.get(index);
+                        } else {
+                            a = all_arr.get(index + 3);
+                        }
+                    } else {
+                        if (all_arr.get(index + 2).getDouble("JP") > all_arr.get(index + 3).getDouble("Other")) {
+                            a = all_arr.get(index + 2);
+                        } else {
+                            a = all_arr.get(index + 3);
+                        }
+                    }
+                } else {
+                    if (all_arr.get(index + 1).getDouble("EU") > all_arr.get(index + 2).getDouble("JP")) {
+                        if (all_arr.get(index + 1).getDouble("EU") > all_arr.get(index + 3).getDouble("Other")) {
+                            a = all_arr.get(index + 1);
+                        } else {
+                            a = all_arr.get(index + 3);
+                        }
+                    } else {
+                        if (all_arr.get(index + 2).getDouble("JP") > all_arr.get(index + 3).getDouble("Other")) {
+                            a = all_arr.get(index + 2);
+                        } else {
+                            a = all_arr.get(index + 3);
+                        }
+                    }
+                }
+
+                arr.add(a);
+                index += 4;
+            }
+            System.out.println();
+            System.out.println();
+            
+            System.out.println("TOP REGION SALES PER GENRE IN THE MILLIONS");
+            System.out.println("__________________________________________");
+            for (var a : arr) {
+                if(a.getDouble("NA")!=null){
+                    System.out.print("N. America\t"+a.getDouble("NA"));
+                }else if(a.getDouble("EU")!=null){
+                    System.out.print("   Europe\t"+a.getDouble("EU"));
+                }else if(a.getDouble("JP")!=null){
+                    System.out.print("   Japan\t"+a.getDouble("JP"));
+                }else{
+                    System.out.print("   Other\t"+a.getDouble("Other"));
+                }
+                System.out.print("\t"+a.getString("_id"));
+                System.out.println();
             }
         }
         //4) who should I market it towards (platform / device)
         
-        /*
-        {
-            "_id" : ObjectId("59b6b96423b65d0a04de128d"),
-            "itemCount": 25,
-            "defectiveItemCount": 5,
-            "time": ISODate("x")
-        },
-        {
-            "_id" : ObjectId("59b6b96423b65d0a04de128d"),
-            "itemCount": 20,
-            "defectiveItemCount": 7,
-            "time": ISODate("x")
-        }
-        Aggregation pipeline = newAggregation(
-                match(Criteria.where("time").gt(time)),
-                group().sum("itemCount").as("total").sum("defectiveItemCount").as("defective"),
-                project("total", "defective")
-        );*/
         
-        /*
-        //Connection to MongoDB Atlas
-        MongoClient client = MongoClients.create("mongodb+srv://user3:pass3@cluster0.3bpui.mongodb.net/gaming?retryWrites=true&w=majority");
-        MongoDatabase database = client.getDatabase("gaming");
-
-        MongoCollection<Document> collection = database.getCollection("test1");
-        //Document query = collection.find(eq("Name","New Super Mario Bros. Wii")).iterator().next();
-        Document query = collection.find(eq("Name","New Super Mario Bros. Wii")).first();
-        System.out.println();
-        System.out.println(query.toJson());
-        System.out.println();
-        System.out.println("Test:"+query.getString("Name"));
-        System.out.println("Test:"+query.getInteger("Year_of_Release"));
-        
-        Document query2 = collection.find(eq("User_Count", 10179)).first();
-        System.out.println();
-        System.out.println(query2.toJson());
-        System.out.println();
-        System.out.println("Test:"+query2.getString("Name"));
-        System.out.println("Test:"+query2.getInteger("Year_of_Release"));
-        System.out.println();
-        
-        //{User_Count:{$gte:10000}}
-        FindIterable<Document> result = collection.find(
-        new Document("User_Count", new Document("$gte", 10000)));
-        if (result == null) {
-            System.out.println("Failed");
-        }
-        for (Document r : result) {
-            System.out.println(r.toJson());
-        }
-        */
     }
+
 }
