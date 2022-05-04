@@ -11,6 +11,7 @@ import org.bson.Document;
 import com.mongodb.Block;
 import com.mongodb.DBObject;
 import com.mongodb.DBCursor;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.DistinctIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
@@ -27,6 +28,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.bson.conversions.Bson;
+import static com.mongodb.client.model.Aggregates.*;
+import com.mongodb.client.model.Sorts;
 /**
  *
  * @author nicole
@@ -41,6 +44,8 @@ public class Proj3 {
 
         /******************************NICOLE******************************/
         MongoCollection<Document> collection = database.getCollection("globalvgsales");
+        
+        //2) What genres are most popular to each given region        
         //gaming> db.globalvgsales.distinct("Genre")
         DistinctIterable<String> unique_genres = collection.distinct("Genre", String.class);
         /*[
@@ -52,12 +57,30 @@ public class Proj3 {
             'Sports',   'Strategy'
         ]*/
         if (unique_genres == null) {
-            System.out.println("Failed");
+            System.out.println("No Genres");
         }else{
             for(var ug : unique_genres) {
-                FindIterable<Document> result = collection.find(eq("Genre", ug));
+                
+                AggregateIterable<Document> genreCounts2 = collection.aggregate(Arrays.asList(
+                        Aggregates.match(Filters.eq("Genre", ug)),
+                        Aggregates.group(ug, Accumulators.sum("sum", "$NA_Sales"))));
+                for (Document g : genreCounts2) {
+                        System.out.println(g.toJson());
+                    }
+                
+                /*
+                ...
+                Sports 2346
+                Strategy 681
+                
+                ...
+                Sports 683.349
+                Strategy 68.7
+                */
+
             }
         }
+        //4) who should I market it towards (platform / device)
         
         /*
         {
@@ -77,20 +100,6 @@ public class Proj3 {
                 group().sum("itemCount").as("total").sum("defectiveItemCount").as("defective"),
                 project("total", "defective")
         );*/
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
         /*
         //Connection to MongoDB Atlas
