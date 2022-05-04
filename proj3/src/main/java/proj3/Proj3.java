@@ -203,6 +203,11 @@ public class Proj3 {
         }
         //4) who should I market it towards (platform / device)
         
+        //5) What are the top 5 selling videogames in each country
+        //db.globalvgratings.aggregate([{$sort:{ Name: 1, JP_Sales: 1 } },{$group:{_id: "$Name",JP_Sales: { $first: "$JP_Sales" }}},{$sort:{JP_Sales:-1}},{$limit: 5}])
+        //db.globalvgratings.aggregate([{$sort:{ Name: 1, NA_Sales: 1 } },{$group:{_id: "$Name",NA_Sales: { $first: "$NA_Sales" }}},{$sort:{NA_Sales:-1}},{$limit: 5}])
+        //db.globalvgratings.aggregate([{$sort:{ Name: 1, EU_Sales: 1 } },{$group:{_id: "$Name",EU_Sales: { $first: "$EU_Sales" }}},{$sort:{EU_Sales:-1}},{$limit: 5}])
+        
         
     }
 
