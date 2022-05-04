@@ -12,6 +12,8 @@ import com.mongodb.Block;
 import com.mongodb.DBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.AggregateIterable.*;
+import com.mongodb.client.internal.AggregateIterable.*;
 import com.mongodb.client.DistinctIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
@@ -212,19 +214,14 @@ public class Proj3 {
         System.out.println();System.out.println();
         MongoCollection<Document> coll = database.getCollection("globalvgsales");
         
-                                    //collection.aggregate(Arrays.asList(Aggregates.sort(ascending("_id"))));
-        
-        AggregateIterable<Document> jp = coll.aggregate(Arrays.asList(
-                Aggregates.sort(new Document("Name", 1).append("JP_Sales", 1)),
-                Aggregates.group(new Document("_id", "Name").append("JP_Sales", Accumulators.first("$JP_Sales", "JP_Sales"))),
-                Aggregates.sort(new Document("Name", 1).append("JP_Sales", 1)),
+        AggregateIterable<Document> jp2 = coll.aggregate(Arrays.asList(
+                Aggregates.sort(eq("JP_Sales", -1)),
                 Aggregates.limit(5)
         ));
         
-        System.out.println(jp);
-        
-       
-        
+        for(Document j:jp2){
+            System.out.println(j.toJson());
+        }
         
         /*db.globalvgratings.aggregate([
         {
