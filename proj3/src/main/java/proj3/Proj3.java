@@ -199,7 +199,7 @@ public class Proj3 {
                 }else{
                     System.out.print("   Other\t"+a.getDouble("Other"));
                 }
-                System.out.print("\t"+a.getString("_id"));
+                System.out.print("\t\t"+a.getString("_id"));
                 System.out.println();
             }
         }
