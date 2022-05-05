@@ -212,43 +212,79 @@ public class Proj3 {
         */
         System.out.println();
         System.out.println();
-        AggregateIterable<Document> jPlat2 = collection.aggregate(Arrays.asList(
+        AggregateIterable<Document> jPlat = collection.aggregate(Arrays.asList(
                 Aggregates.sort(eq("Global_Sales", -1)),
                 Aggregates.group("$Platform", Accumulators.max("Sales", "$Global_Sales")),
                 Aggregates.sort(eq("Global_Sales", -1))
         ));
         
-        System.out.println("  TOP PLATFORMS IN GLOBAL SALES");
-        System.out.println("___________________________________");
-        for (Document j : jPlat2) {
+        String platID = "";
+        Double platSale = -1.0;
+        System.out.println("          TOP PLATFORMS IN GLOBAL SALES");
+        System.out.println("        ___________________________________");
+        for (Document j : jPlat) {
             try{
                 System.out.print(j.getString("_id")+"\n\t|");
                 for (int x = 0; x < j.getDouble("Sales"); x++) {
                     System.out.print("*");
                 }
                 System.out.print("\t" + j.getDouble("Sales")+"\n");
+                if(j.getDouble("Sales")>platSale){
+                    platID = j.getString("_id");
+                    platSale = j.getDouble("Sales");
+                }
             }catch (Exception e) {
                 System.out.print(j.getInteger("_id")+"\n\t|");
                 for (int x = 0; x < j.getDouble("Sales"); x++) {
                     System.out.print("*");
                 }
                 System.out.print("\t" + j.getDouble("Sales")+"\n");
+                if(j.getDouble("Sales")>platSale){
+                    platID = j.getInteger("_id").toString();
+                    platSale = j.getDouble("Sales");
+                }
             }
         }
         
+        System.out.println();System.out.println();
+        AggregateIterable<Document> jPlat2 = collection.aggregate(Arrays.asList(
+                Aggregates.sort(eq("Global_Sales", -1)),
+                Aggregates.group("$Platform", Accumulators.avg("Average", "$Global_Sales")),
+                Aggregates.sort(eq("Global_Sales", -1))
+        ));
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        String platID2 = "";
+        Double platAvg = -1.0;
+        System.out.println("          TOP PLATFORMS GLOBAL SALE AVGS");
+        System.out.println("        ___________________________________");
+        for (Document j : jPlat2) {
+            try{
+                System.out.print(j.getString("_id")+"\n\t|");
+                for (int x = 0; x < j.getDouble("Average"); x++) {
+                    System.out.print("*");
+                }
+                System.out.print("\t" + j.getDouble("Average")+"\n");
+                if(j.getDouble("Average")>platAvg){
+                    platID2 = j.getString("_id");
+                    platAvg = j.getDouble("Average");
+                }
+            }catch (Exception e) {
+                System.out.print(j.getInteger("_id")+"\n\t|");
+                for (int x = 0; x < j.getDouble("Average"); x++) {
+                    System.out.print("*");
+                }
+                System.out.print("\t" + j.getDouble("Average")+"\n");
+                if(j.getDouble("Average")>platAvg){
+                    platID2 = j.getInteger("_id").toString();
+                    platAvg = j.getDouble("Average");
+                }
+            }
+        }
+        System.out.println();
+        System.out.println("TOP PLATFORM GOES TO: \n\t\t\t" + platID + " WITH " + platSale + " MILLION SALES");
+        System.out.println();
+        System.out.println("BEST PLATFORM ON AVERAGE GOES TO: \n\t\t\t\t\t"+platID2+" WITH AN AVERAGE OF $"+platAvg+" MILLION SALES");
+        System.out.println();
         /******************************CHRIS******************************/
         //5) What are the top 5 selling videogames in each country
         System.out.println();System.out.println();
@@ -280,6 +316,8 @@ public class Proj3 {
         for(Document n:na){
             System.out.println(n.getString("Name")+"\t\t"+n.getString("Platform"));
         }
+        
+        /******************************EMRE******************************/
         
     }
 
