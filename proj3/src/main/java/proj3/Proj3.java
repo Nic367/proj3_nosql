@@ -503,7 +503,7 @@ public class Proj3 {
 
         AggregateIterable<Document> jp = coll.aggregate(Arrays.asList(
                 Aggregates.sort(eq("JP_Sales", -1)),
-                Aggregates.limit(5)
+                Aggregates.limit(10)
         ));
         for(Document j:jp){
             System.out.println(j.getString("Name")+"\t\t"+j.getString("Platform"));
@@ -512,7 +512,7 @@ public class Proj3 {
         System.out.println();
         AggregateIterable<Document> eu = coll.aggregate(Arrays.asList(
                 Aggregates.sort(eq("EU_Sales", -1)),
-                Aggregates.limit(5)
+                Aggregates.limit(10)
         ));
         for(Document e:eu){
             System.out.println(e.getString("Name")+"\t\t"+e.getString("Platform"));
@@ -521,7 +521,7 @@ public class Proj3 {
         System.out.println();
         AggregateIterable<Document> na = coll.aggregate(Arrays.asList(
                 Aggregates.sort(eq("NA_Sales", -1)),
-                Aggregates.limit(5)
+                Aggregates.limit(10)
         ));
 
         for(Document n:na){
@@ -533,7 +533,7 @@ public class Proj3 {
 
         AggregateIterable<Document> jp2 = col2.aggregate(Arrays.asList(
                 Aggregates.sort(eq("JP_Sales", -1)),
-                Aggregates.limit(5)
+                Aggregates.limit(20)
         ));
         for(Document j:jp2){
             System.out.println(j.getString("Name")+"\t\t"+j.getString("Platform")+"\t\t"+j.getString("Rating"));
@@ -542,7 +542,7 @@ public class Proj3 {
         System.out.println();
         AggregateIterable<Document> eu2 = col2.aggregate(Arrays.asList(
                 Aggregates.sort(eq("EU_Sales", -1)),
-                Aggregates.limit(5)
+                Aggregates.limit(20)
         ));
         for(Document e:eu2){
             System.out.println(e.getString("Name")+"\t\t"+e.getString("Platform")+"\t\t"+e.getString("Rating"));
@@ -551,7 +551,7 @@ public class Proj3 {
         System.out.println();
         AggregateIterable<Document> na2 = col2.aggregate(Arrays.asList(
                 Aggregates.sort(eq("NA_Sales", -1)),
-                Aggregates.limit(5)
+                Aggregates.limit(20)
         ));
 
         for(Document n:na2){
