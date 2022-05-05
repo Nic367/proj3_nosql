@@ -505,15 +505,18 @@ public class Proj3 {
                 Aggregates.sort(eq("JP_Sales", -1)),
                 Aggregates.limit(10)
         ));
+        System.out.println("TOP 10 GAMES IN JAPAN");
+        System.out.println("______________________");
         for(Document j:jp){
             System.out.println(j.getString("Name")+"\t\t"+j.getString("Platform"));
         }
-        
         System.out.println();
         AggregateIterable<Document> eu = coll.aggregate(Arrays.asList(
                 Aggregates.sort(eq("EU_Sales", -1)),
                 Aggregates.limit(10)
         ));
+        System.out.println("TOP 10 GAMES IN EUROPE");
+        System.out.println("______________________");
         for(Document e:eu){
             System.out.println(e.getString("Name")+"\t\t"+e.getString("Platform"));
         }
@@ -524,6 +527,8 @@ public class Proj3 {
                 Aggregates.limit(10)
         ));
         
+        System.out.println("TOP 10 GAMES IN N. AMERICA");
+        System.out.println("__________________________");
         for(Document n:na){
             System.out.println(n.getString("Name")+"\t\t"+n.getString("Platform"));
         }
@@ -539,6 +544,8 @@ public class Proj3 {
                 Aggregates.sort(eq("JP_Sales", -1)),
                 Aggregates.limit(20)
         ));
+        System.out.println("TOP 20 GAMES IN JAPAN");
+        System.out.println("______________________");
         for (Document j : jp2) {
             System.out.println(j.getString("Rating")+"\t"+j.getString("Platform")+"\t"+j.getString("Name"));
         }
@@ -548,6 +555,8 @@ public class Proj3 {
                 Aggregates.sort(eq("EU_Sales", -1)),
                 Aggregates.limit(20)
         ));
+        System.out.println("TOP 20 GAMES IN EUROPE");
+        System.out.println("______________________");
         for (Document e : eu2) {
             System.out.println(e.getString("Rating")+"\t"+e.getString("Platform")+"\t"+e.getString("Name"));
         }
@@ -557,7 +566,8 @@ public class Proj3 {
                 Aggregates.sort(eq("NA_Sales", -1)),
                 Aggregates.limit(20)
         ));
-
+        System.out.println("TOP 20 GAMES IN N. AMERICA");
+        System.out.println("__________________________");
         for (Document n : na2) {
             System.out.println(n.getString("Rating")+"\t"+n.getString("Platform")+"\t"+n.getString("Name"));
         }
