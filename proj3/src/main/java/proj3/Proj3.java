@@ -36,13 +36,13 @@ public class Proj3 {
 
         /******************************NICOLE******************************/
         /*QUESTION OF ANALYSIS: What genres are most popular to each given region?
-        The way I went going about this was first getting a distinct list of genres then going through each 
+        The way I went going about this was first getting a distinct list of genres then going through each
         and summing up every regions total for that specific genre. After adding each document to my master
         array "all_arr" I went through and creating my graph for visual comparison before adding the max
         sales region per document to my "arr" array and listing out where each genre would most likely have
         the most sales based on 40 years of data*/
         MongoCollection<Document> collection = database.getCollection("globalvgsales");
-              
+
         //gaming> db.globalvgsales.distinct("Genre")
         DistinctIterable<String> unique_genres = collection.distinct("Genre", String.class);
         /*[
@@ -101,10 +101,10 @@ public class Proj3 {
             Sports 683.349
             Strategy 68.7
             */
-            
+
             System.out.println("\t\t\tGRAPH OF GENRE SALES IN THE 10 MILLIONS");
             System.out.println("______________________________________________________________________________________________________");
-            
+
             for (int y = 0; y < all_arr.size(); y++) {
 
                 System.out.print(all_arr.get(y).getString("_id")+"\n\t|");
@@ -136,7 +136,7 @@ public class Proj3 {
                 System.out.print("\t"+tens+"\tOther Regions\n");
                 y += 3;
             }
-            
+
             int index = 0;
             while (index < all_arr.size()) {
                 Document a;
@@ -176,7 +176,7 @@ public class Proj3 {
             }
             System.out.println();
             System.out.println();
-            
+
             System.out.println("TOP REGION SALES PER GENRE IN THE MILLIONS");
             System.out.println("__________________________________________");
             for (var a : arr) {
@@ -193,9 +193,9 @@ public class Proj3 {
                 System.out.println();
             }
         }
-        
+
         /*QUESTION OF ANALYSIS: who should I market it towards (platform / device)?
-        I went about this by first ranking all the data on Global_Sales then grouping 
+        I went about this by first ranking all the data on Global_Sales then grouping
         them based on their distinct platforms and finding their corresponding max.
         JAVA is reading it in as an integer if the only characters in the string are
         numbers (i.e. Platform 2600)., which is why I needed to implement a try catch.
@@ -207,7 +207,7 @@ public class Proj3 {
                 Aggregates.group("$Platform", Accumulators.max("Sales", "$Global_Sales")),
                 Aggregates.sort(eq("Global_Sales", -1))
         ));
-        
+
         String platID = "";
         Double platSale = -1.0;
         System.out.println("          TOP PLATFORMS IN GLOBAL SALES");
@@ -235,14 +235,14 @@ public class Proj3 {
                 }
             }
         }
-        
+
         System.out.println();System.out.println();
         AggregateIterable<Document> jPlat2 = collection.aggregate(Arrays.asList(
                 Aggregates.sort(eq("Global_Sales", -1)),
                 Aggregates.group("$Platform", Accumulators.avg("Average", "$Global_Sales")),
                 Aggregates.sort(eq("Global_Sales", -1))
         ));
-        
+
         String platID2 = "";
         Double platAvg = -1.0;
         System.out.println("          TOP PLATFORMS GLOBAL SALE AVGS");
@@ -275,7 +275,7 @@ public class Proj3 {
         System.out.println();
         System.out.println("BEST PLATFORM ON AVERAGE GOES TO: \n\t\t\t\t\t"+platID2+" WITH AN AVERAGE OF $"+platAvg+" MILLION SALES");
         System.out.println();System.out.println();
-        
+
         /******************************EMRE******************************/
         MongoCollection<Document> collection1 = database.getCollection("globalvgsales");
         MongoCollection<Document> collection2 = database.getCollection("globalvgratings");
@@ -495,12 +495,12 @@ public class Proj3 {
 
             System.out.println(myresult11.toJson());
             System.out.println();
-            
+
             /******************************CHRIS******************************/
         //5) What are the top 5 selling videogames in each country
         System.out.println();System.out.println();
         MongoCollection<Document> coll = database.getCollection("globalvgsales");
-        
+
         AggregateIterable<Document> jp = coll.aggregate(Arrays.asList(
                 Aggregates.sort(eq("JP_Sales", -1)),
                 Aggregates.limit(5)
@@ -508,7 +508,7 @@ public class Proj3 {
         for(Document j:jp){
             System.out.println(j.getString("Name")+"\t\t"+j.getString("Platform"));
         }
-        
+
         System.out.println();
         AggregateIterable<Document> eu = coll.aggregate(Arrays.asList(
                 Aggregates.sort(eq("EU_Sales", -1)),
@@ -517,18 +517,46 @@ public class Proj3 {
         for(Document e:eu){
             System.out.println(e.getString("Name")+"\t\t"+e.getString("Platform"));
         }
-        
+
         System.out.println();
         AggregateIterable<Document> na = coll.aggregate(Arrays.asList(
                 Aggregates.sort(eq("NA_Sales", -1)),
                 Aggregates.limit(5)
         ));
-        
+
         for(Document n:na){
             System.out.println(n.getString("Name")+"\t\t"+n.getString("Platform"));
         }
+        //6) What are the ages I should be selling videogames in each country
+        System.out.println();System.out.println();
+        MongoCollection<Document> col2 = database.getCollection("globalvgratings");
 
+        AggregateIterable<Document> jp2 = col2.aggregate(Arrays.asList(
+                Aggregates.sort(eq("JP_Sales", -1)),
+                Aggregates.limit(5)
+        ));
+        for(Document j:jp2){
+            System.out.println(j.getString("Name")+"\t\t"+j.getString("Platform")+"\t\t"+j.getString("Rating"));
+        }
+
+        System.out.println();
+        AggregateIterable<Document> eu2 = col2.aggregate(Arrays.asList(
+                Aggregates.sort(eq("EU_Sales", -1)),
+                Aggregates.limit(5)
+        ));
+        for(Document e:eu2){
+            System.out.println(e.getString("Name")+"\t\t"+e.getString("Platform")+"\t\t"+e.getString("Rating"));
+        }
+
+        System.out.println();
+        AggregateIterable<Document> na2 = col2.aggregate(Arrays.asList(
+                Aggregates.sort(eq("NA_Sales", -1)),
+                Aggregates.limit(5)
+        ));
+
+        for(Document n:na2){
+            System.out.println(n.getString("Name")+"\t\t"+n.getString("Platform")+"\t\t"+n.getString("Rating"));
+        }
         }
     }
-
 }
