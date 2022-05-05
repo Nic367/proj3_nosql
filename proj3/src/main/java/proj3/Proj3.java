@@ -322,8 +322,6 @@ public class Proj3 {
             System.out.println();
             System.out.println();
             System.out.println("ANALYSIS 1");
-            System.out.println();
-
             System.out.println("SALES PER PUBLISHER IN THE MILLIONS");
             System.out.println("__________________________________________");
             System.out.println();
@@ -495,8 +493,10 @@ public class Proj3 {
 
             System.out.println(myresult11.toJson());
             System.out.println();
-            
-            /******************************CHRIS******************************/
+        }
+        
+        /******************************CHRIS******************************/
+        System.out.println("ANALYSIS 1");
         //5) What are the top 5 selling videogames in each country
         System.out.println();System.out.println();
         MongoCollection<Document> coll = database.getCollection("globalvgsales");
@@ -527,8 +527,41 @@ public class Proj3 {
         for(Document n:na){
             System.out.println(n.getString("Name")+"\t\t"+n.getString("Platform"));
         }
+        
+        System.out.println();System.out.println();
+        System.out.println("ANALYSIS 2");
+        //6) What are the ages I should be selling videogames in each country
+        System.out.println();
+        System.out.println();
+        MongoCollection<Document> col2 = database.getCollection("globalvgratings");
 
+        AggregateIterable<Document> jp2 = col2.aggregate(Arrays.asList(
+                Aggregates.sort(eq("JP_Sales", -1)),
+                Aggregates.limit(5)
+        ));
+        for (Document j : jp2) {
+            System.out.println(j.getString("Rating")+"\t"+j.getString("Platform")+"\t"+j.getString("Name"));
         }
+
+        System.out.println();
+        AggregateIterable<Document> eu2 = col2.aggregate(Arrays.asList(
+                Aggregates.sort(eq("EU_Sales", -1)),
+                Aggregates.limit(5)
+        ));
+        for (Document e : eu2) {
+            System.out.println(e.getString("Rating")+"\t"+e.getString("Platform")+"\t"+e.getString("Name"));
+        }
+
+        System.out.println();
+        AggregateIterable<Document> na2 = col2.aggregate(Arrays.asList(
+                Aggregates.sort(eq("NA_Sales", -1)),
+                Aggregates.limit(5)
+        ));
+
+        for (Document n : na2) {
+            System.out.println(n.getString("Rating")+"\t"+n.getString("Platform")+"\t"+n.getString("Name"));
+        }
+        
     }
 
 }
